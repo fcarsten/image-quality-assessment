@@ -1,6 +1,8 @@
 from threading import Thread
 
 import wx
+import os
+import glob
 
 # Define notification event for thread completion
 EVT_RESULT_ID = wx.NewId()
@@ -32,6 +34,20 @@ def resizeImageToFit(image: wx.Image, max_width, max_height):
     image.Rescale(new_width, new_height)
 
 
+def explode_dirs(filenames: [str]):
+    res = []
+    for filename in filenames:
+        if os.path.isfile(filename):
+            res.append(filename)
+        elif os.path.isdir(filename):
+            file_extensions = ["jpg", "jpeg", "png", "bmp", "gif"]
+            for ext in file_extensions:
+                img_paths = glob.glob(os.path.join(filename, '*.' + ext))
+                res.extend(img_paths)
+
+    return res
+
+
 class WorkerThread(Thread):
 
     def __init__(self, notify_window, filenames):
@@ -39,9 +55,7 @@ class WorkerThread(Thread):
         Thread.__init__(self)
         self._notify_window = notify_window
         self._want_abort = 0
-        self.filenames = filenames
-
-        self.start()
+        self.filenames = explode_dirs(filenames)
 
     def run(self):
         for filename in self.filenames:

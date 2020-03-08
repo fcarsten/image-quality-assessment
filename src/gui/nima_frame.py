@@ -15,6 +15,7 @@ class NIMAFileDropTarget(wx.FileDropTarget):
 
     def __init__(self, nima_frame):
         super(NIMAFileDropTarget, self).__init__()
+        self.SetDefaultAction(wx.DragCopy)
         self.nima_frame = nima_frame
 
     def OnDropFiles(self, x, y, filenames):
@@ -22,6 +23,7 @@ class NIMAFileDropTarget(wx.FileDropTarget):
         if len(filenames) > 0:
             if not self.nima_frame.worker:
                 self.nima_frame.worker = WorkerThread(self.nima_frame, filenames)
+                self.nima_frame.worker.start()
 
         return True
 
