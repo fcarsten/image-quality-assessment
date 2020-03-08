@@ -72,7 +72,7 @@ class TestDataGenerator(tf.keras.utils.Sequence):
         self.on_epoch_end()  # call ensures that samples are shuffled in first epoch if shuffle is set to True
 
     def __len__(self):
-        return int(np.ceil(len(self.samples) / self.batch_size))  # number of batches per epoch
+        return int(np.ceil(len(self.samples) / float(self.batch_size)))  # number of batches per epoch
 
     def __getitem__(self, index):
         batch_indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]  # get batch indexes
