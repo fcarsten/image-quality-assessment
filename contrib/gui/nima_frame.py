@@ -30,8 +30,8 @@ class NIMAFileDropTarget(wx.FileDropTarget):
 
 class NIMAFrame(wx.Frame):
     base_model_name = "MobileNet"
-    a_weight_file = "../models/MobileNet/weights_mobilenet_aesthetic_0.07.hdf5"
-    t_weight_file = "../models/MobileNet/weights_mobilenet_technical_0.11.hdf5"
+    a_weight_file = "./models/MobileNet/weights_mobilenet_aesthetic_0.07.hdf5"
+    t_weight_file = "./models/MobileNet/weights_mobilenet_technical_0.11.hdf5"
 
     def __init__(self, parent, title):
         super(NIMAFrame, self).__init__(parent, title=title,
