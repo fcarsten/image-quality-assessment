@@ -55,7 +55,7 @@ class NIMAFrame(wx.Frame):
             self.worker = None
         else:
             # Process results here
-
+            self.Freeze()
             filename, image, prediction = event.data
             imagePanel = ImagePanel(self.root_panel, filename, image, prediction)
 
@@ -63,16 +63,18 @@ class NIMAFrame(wx.Frame):
                           wx.ALL, 10)
             self.vbox.Layout()
             self.root_panel.FitInside()
+            self.Thaw()
 
     def on_resize(self, event):
+        self.Freeze()
         cur_col_num = self.vbox.GetCols()
         panel_width = self.root_panel.GetClientSize()[0]
 
-        new_col_num = max(1, panel_width // PANEL_WIDTH)
+        new_col_num = max(3, panel_width // PANEL_WIDTH)
 
         if new_col_num != cur_col_num:
             self.vbox.SetCols(new_col_num)
-
+        self.Thaw()
         event.Skip()
 
     def predict(self, image_source):
