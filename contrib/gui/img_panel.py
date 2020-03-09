@@ -2,6 +2,12 @@ import os
 
 import wx
 
+BITMAP_WDITH = 200
+BITMAP_HEIGHT  = 200
+BORDER_SIZE = 10
+
+PANEL_WIDTH = BITMAP_WDITH + BORDER_SIZE
+PANEL_HEIGHT = BITMAP_HEIGHT + BORDER_SIZE + 50 # 50 being a guess for the height of the 3 text fields
 
 class ImagePanel(wx.Panel):
     def __init__(self, parent, filename, image, predictions):
@@ -13,29 +19,27 @@ class ImagePanel(wx.Panel):
 
     def InitUI(self, image):
         self.SetBackgroundColour('white')
-        self.SetMinSize(wx.Size(210, 260))
-        self.SetMaxSize(wx.Size(210, 260))
-        hbox = wx.BoxSizer(wx.VERTICAL)
+        self.SetMinSize(wx.Size(PANEL_WIDTH, 260))
+        self.SetMaxSize(wx.Size(PANEL_WIDTH, 260))
+        vbox = wx.BoxSizer(wx.VERTICAL)
 
         img_panel = wx.Panel(self)
         img_panel.SetBackgroundColour('white')
 
         bitmap = wx.StaticBitmap(img_panel, wx.ID_ANY, wx.BitmapFromImage(image))
-        bitmap.SetMinSize(wx.Size(200, 200))
-        bitmap.SetMaxSize(wx.Size(200, 200))
-        img_panel.SetMinSize(wx.Size(200, 200))
-        img_panel.SetMaxSize(wx.Size(200, 200))
+        bitmap.SetMinSize(wx.Size(BITMAP_WDITH, BITMAP_HEIGHT))
+        bitmap.SetMaxSize(wx.Size(BITMAP_WDITH, BITMAP_HEIGHT))
+        img_panel.SetMinSize(wx.Size(BITMAP_WDITH, BITMAP_HEIGHT))
+        img_panel.SetMaxSize(wx.Size(BITMAP_WDITH, BITMAP_HEIGHT))
 
-        hbox.Add(img_panel, 0, flag=wx.LEFT | wx.RIGHT | wx.TOP, border=10)
+        vbox.Add(img_panel, 0, flag=wx.LEFT | wx.RIGHT | wx.TOP, border=BORDER_SIZE)
 
         font = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT)
         font.SetPointSize(12)
 
-        vbox = wx.BoxSizer(wx.VERTICAL)
-
         st1 = wx.StaticText(self, label="{0}".format(os.path.basename(self.filename)))
         st1.SetFont(font)
-        vbox.Add(st1, 0, flag=wx.LEFT | wx.RIGHT, border=10)
+        vbox.Add(st1, 0, flag=wx.LEFT | wx.RIGHT, border=BORDER_SIZE)
 
         hbox_t = wx.BoxSizer(wx.HORIZONTAL)
         st1 = wx.StaticText(self, label='T Score: ')
@@ -46,7 +50,7 @@ class ImagePanel(wx.Panel):
         self.technical_score_field.SetFont(font)
         hbox_t.Add(self.technical_score_field, 0, flag=wx.RIGHT, border=8)
 
-        vbox.Add(hbox_t, 0, flag=wx.LEFT | wx.RIGHT, border=10)
+        vbox.Add(hbox_t, 0, flag=wx.LEFT | wx.RIGHT, border=BORDER_SIZE)
 
         hbox_a = wx.BoxSizer(wx.HORIZONTAL)
         st1 = wx.StaticText(self, label='A Score: ')
@@ -57,7 +61,6 @@ class ImagePanel(wx.Panel):
         self.aesthetical_score_field.SetFont(font)
         hbox_a.Add(self.aesthetical_score_field, 0, flag=wx.RIGHT, border=8)
 
-        vbox.Add(hbox_a, 0, flag=wx.LEFT | wx.RIGHT, border=10)
+        vbox.Add(hbox_a, 0, flag=wx.LEFT | wx.RIGHT, border=BORDER_SIZE)
 
-        hbox.Add(vbox, 0)
-        self.SetSizerAndFit(hbox)
+        self.SetSizerAndFit(vbox)

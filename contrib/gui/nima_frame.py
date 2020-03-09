@@ -5,11 +5,12 @@ import wx
 
 from evaluater.predict import image_file_to_json, image_dir_to_json, predict
 from gui.img_load_worker import EVT_RESULT, WorkerThread
-from gui.img_panel import ImagePanel
+from gui.img_panel import ImagePanel, PANEL_WIDTH
 from handlers.data_generator import TestDataGenerator
 from handlers.model_builder import Nima
 from utils.utils import calc_mean_score
 
+NIMA_START_SIZE = (800, 600)
 
 class NIMAFileDropTarget(wx.FileDropTarget):
 
@@ -35,7 +36,7 @@ class NIMAFrame(wx.Frame):
 
     def __init__(self, parent, title):
         super(NIMAFrame, self).__init__(parent, title=title,
-                                        size=(800, 600))
+                                        size=NIMA_START_SIZE)
 
         # And indicate we don't have a worker thread yet
         self.worker = None
@@ -63,7 +64,16 @@ class NIMAFrame(wx.Frame):
             self.vbox.Layout()
             self.root_panel.FitInside()
 
-        # In either event, the worker is done
+    def on_resize(self, event):
+        cur_col_num = self.vbox.GetCols()
+        panel_width = self.root_panel.GetClientSize()[0]
+
+        new_col_num = max(1, panel_width // PANEL_WIDTH)
+
+        if new_col_num != cur_col_num:
+            self.vbox.SetCols(new_col_num)
+
+        event.Skip()
 
     def predict(self, image_source):
         img_format = "jpg"
@@ -106,8 +116,9 @@ class NIMAFrame(wx.Frame):
         self.SetMenuBar(menubar)
 
         self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
+        self.Bind(wx.EVT_SIZE, self.on_resize)
 
-        self.SetSize((800, 600))
+        self.SetSize(NIMA_START_SIZE)
         self.SetTitle('NIMA Scorer')
 
         self.root_panel = wx.ScrolledCanvas(self)
@@ -118,7 +129,8 @@ class NIMAFrame(wx.Frame):
         dt = NIMAFileDropTarget(self)
         self.root_panel.SetDropTarget(dt)
 
-        self.vbox = wx.BoxSizer(wx.VERTICAL)
+        # self.vbox = wx.BoxSizer(wx.VERTICAL)
+        self.vbox = wx.GridSizer(3,0,0)
         self.root_panel.SetSizer(self.vbox)
 
     def OnQuit(self, e):
